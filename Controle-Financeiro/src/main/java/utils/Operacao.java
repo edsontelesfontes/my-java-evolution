@@ -2,7 +2,7 @@ package utils;
 
 import java.time.LocalDate;
 
-public class Extrato {
+public class Operacao {
     String transacao;
     LocalDate timestemp;
 
@@ -10,7 +10,7 @@ public class Extrato {
 
     Double saldoDaConta;
 
-    public Extrato(String transacao, LocalDate timestemp, Double valorDaTransacao, Double saldoDaConta) {
+    public Operacao(String transacao, LocalDate timestemp, Double valorDaTransacao, Double saldoDaConta) {
         this.transacao = transacao;
         this.timestemp = timestemp;
         this.valorDaTransacao = valorDaTransacao;

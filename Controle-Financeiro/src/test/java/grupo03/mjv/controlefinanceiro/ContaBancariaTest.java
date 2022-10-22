@@ -1,14 +1,12 @@
 package grupo03.mjv.controlefinanceiro;
 
-import exception.CancelarContaExpetion;
-import exception.DataInvalidaException;
-import exception.SaldoInsuficienteException;
-import exception.TransferenciaDestinoNuloException;
+import Model.Cliente;
+import Model.ContaBancaria;
+import exception.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import utils.Extrato;
 
 import java.time.LocalDate;
 
@@ -24,7 +22,8 @@ class ContaBancariaTest {
 
     @BeforeEach
     public void setUP(){
-        contaBancaria = new ContaBancaria(1111, 1111, "jose");
+        Cliente cliente = new Cliente("jose", "103.300.500-00");
+        contaBancaria = new ContaBancaria(1111, 1111, cliente);
         contaBancariaDestino = new ContaBancaria(3333, 1111, "Maria");
         contaBancariaNula = null;
         contaBancariaFalse = new ContaBancaria(1111, 1111, "jose");
@@ -45,6 +44,10 @@ class ContaBancariaTest {
         contaBancaria.depositar(5000.0);
         contaBancaria.sacar(50.0);
         } catch (SaldoInsuficienteException e) {
+            throw new RuntimeException(e);
+        } catch (CancelarContaExpetion e) {
+            throw new RuntimeException(e);
+        } catch (ValorInsuficienteException e) {
             throw new RuntimeException(e);
         }
         Double resultado = contaBancaria.getSaldo();
@@ -74,7 +77,7 @@ class ContaBancariaTest {
             contaBancaria.transferir(5000.0, contaBancariaDestino);
         } catch (TransferenciaDestinoNuloException e) {
             throw new RuntimeException(e);
-        } catch (SaldoInsuficienteException e) {
+        } catch (SaldoInsuficienteException | CancelarContaExpetion | ValorInsuficienteException e) {
             throw new RuntimeException(e);
         }
 
@@ -116,20 +119,22 @@ class ContaBancariaTest {
 
     @DisplayName("Teste consultar saldo")
     @Test
-    void consultarSaldo() {
+    void consultarSaldo(){
 
         try {
             contaBancaria.depositar(5000.0);
             contaBancaria.sacar(500.0);
             contaBancaria.depositar(500.0);
-           contaBancaria.transferir(500.0, contaBancariaDestino);
+            contaBancaria.transferir(500.0, contaBancariaDestino);
         } catch (SaldoInsuficienteException e) {
             throw new RuntimeException(e);
         }
         catch (TransferenciaDestinoNuloException e) {
             throw new RuntimeException(e);
+        } catch (CancelarContaExpetion | ValorInsuficienteException e) {
+            throw new RuntimeException(e);
         }
-    Integer expectativa = 4;
+        Integer expectativa = 4;
     Integer resultado = contaBancaria.getExtrato().size();
     assertEquals(expectativa, resultado);
     }

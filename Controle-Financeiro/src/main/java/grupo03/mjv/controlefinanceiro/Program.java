@@ -1,23 +1,28 @@
 package grupo03.mjv.controlefinanceiro;
 
-import exception.DataInvalidaException;
-import exception.SaldoInsuficienteException;
-import exception.TransferenciaDestinoNuloException;
+import Enums.EnumJustificativa;
+import Model.Cliente;
+import Model.ContaBancaria;
+import Model.ContaCorrente;
+import Model.ContaPoupanca;
+import exception.*;
+import utils.Operacao;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Date;
-import java.util.Objects;
+import java.util.List;
 
 public class Program {
     public static void main(String[] args) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         Date dataDeNascimento;
         //  ContaBancaria cb = new ContaBancaria(1111, 1111, "jose", dataDeNascimento = sdf.parse("10/03/1990"));
-        ContaBancaria cb = new ContaBancaria(1111, 1111, "jose");
-        ContaBancaria c1 = new ContaBancaria(3333, 1111, "Maria");
-        ContaBancaria b = new ContaBancaria();
+
+        Cliente cliente = new Cliente("jose", "444.333.555-66");
+        ContaCorrente cb = new ContaCorrente(1111, 1111, cliente);
+        ContaPoupanca c1 = new ContaPoupanca(3333, 1111, cliente);
         //realizando um deposito
 
         LocalDate periodoInicial = LocalDate.now();
@@ -26,12 +31,15 @@ public class Program {
 
         try {
             cb.depositar(5000.0);
-            cb.sacar(0.0);
+            cb.sacar(50.0);
             // cb.transferir(500.0, c1);
 
             //System.out.println(sdf.format(cb.getDataDeNascimento()));
             // cb.transferir(500.0, b);
             cb.consultarSaldo(periodoInicial, periodoFinal);
+            cb.cancelarConta(cb, EnumJustificativa.INSATISFEITO, "Estou bravo com o banco !");
+            cb.cancelarConta(cb, EnumJustificativa.INSATISFEITO, "Estou bravo com o banco !");
+
         }
 
 //        } catch (TransferenciaDestinoNuloException e) {
@@ -42,9 +50,13 @@ public class Program {
             e.printStackTrace();
         } catch (DataInvalidaException e) {
             throw new RuntimeException(e);
+        } catch (CancelarContaExpetion e) {
+            throw new RuntimeException(e);
+        } catch (ValorInsuficienteException e) {
+            throw new RuntimeException(e);
         }
     }
-    }
+}
 //transferindo para a mesma conta
 //cb.transferir(500.0, cb);
 //caminho feliz
